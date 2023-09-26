@@ -5,6 +5,7 @@ a list of integers representing the Pascal's
 triangle of a given number.
 """
 
+
 def pascal_triangle(n):
     """Returns a list of integers representing
     the Pascal's triangle of n."""
