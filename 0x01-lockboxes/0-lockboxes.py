@@ -13,6 +13,18 @@ def validate_boxes_is_list_of_list(boxes):
     """
     return all([type(box) is list for box in boxes])
 
+
+def isInteger(n):
+    is_int = True
+
+    try:
+        int(n)
+    except ValueError:
+        is_int = False
+
+    return is_int
+
+
 def canUnlockAll(boxes):
     """
        Verifies that all boxes contained in boxes
@@ -28,7 +40,7 @@ def canUnlockAll(boxes):
             return
         visited.append(currentBox)
         for key in boxes[currentBox]:
-            if key not in visited:
+            if key not in visited and isInteger(key):
                 dfs(key)
     dfs(0)
     return len(visited) == len(boxes)
