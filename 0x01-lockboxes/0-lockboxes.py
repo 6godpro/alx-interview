@@ -13,7 +13,6 @@ def validate_boxes_is_list_of_list(boxes):
     """
     return all([type(box) is list for box in boxes])
 
-
 def canUnlockAll(boxes):
     """
        Verifies that all boxes contained in boxes
