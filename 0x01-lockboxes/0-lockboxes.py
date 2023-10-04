@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""This module containts a function to solve
+"""This module contains a function to solve
    the lockboxes challenge.
 """
 
@@ -22,7 +22,8 @@ def canUnlockAll(boxes):
            boxes (list): A list of lists.
        Return: True, if boxes contain lists only else False.
     """
-    if not validate_boxes_is_list_of_list(boxes):
+    if len(boxes) == 0 or \
+        not validate_boxes_is_list_of_list(boxes):
         return False
 
     visited = []
