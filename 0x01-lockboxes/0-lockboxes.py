@@ -22,14 +22,15 @@ def canUnlockAll(boxes):
            boxes (list): A list of lists.
        Return: True, if boxes contain lists only else False.
     """
+    if not validate_boxes_is_list_of_list(boxes):
+        return False
+
     visited = []
 
     def dfs(currentBox):
-        if currentBox > len(boxes):
-            return
         visited.append(currentBox)
         for key in boxes[currentBox]:
-            if key not in visited:
+            if key not in visited and key < len(boxes):
                 dfs(key)
     dfs(0)
     return len(visited) == len(boxes)
