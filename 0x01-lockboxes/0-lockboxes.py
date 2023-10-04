@@ -23,7 +23,7 @@ def canUnlockAll(boxes):
        Return: True, if boxes contain lists only else False.
     """
     if len(boxes) == 0 or \
-        not validate_boxes_is_list_of_list(boxes):
+            not validate_boxes_is_list_of_list(boxes):
         return False
 
     visited = []
@@ -31,7 +31,9 @@ def canUnlockAll(boxes):
     def dfs(currentBox):
         visited.append(currentBox)
         for key in boxes[currentBox]:
-            if key not in visited and key < len(boxes):
+            if type(key) is int and \
+                    key not in visited and \
+                    key < len(boxes):
                 dfs(key)
     dfs(0)
     return len(visited) == len(boxes)
