@@ -36,18 +36,59 @@ def canUnlockAll(boxes):
            boxes (list): A list of lists.
        Return (boolean): True, if all boxes can be unlocked, else False
     """
-    if len(boxes) == 0 or \
+    if boxes == [] or \
             not validate_boxes_is_list_of_list(boxes):
         return False
 
-    visited = []
+    visited = [0]
+    queue = Queue()
+    queue.enqueue(0)
 
-    def dfs(currentBox):
-        visited.append(currentBox)  # stash a used key
-        for key in boxes[currentBox]:  # get a new key using the current key
+    while queue.length != 0:  # run until queue is empty
+        currentBox = queue.dequeue()  # retrieve the next key
+
+        if currentBox is None:
+            break
+
+        for key in boxes[currentBox]:
             if keyIsValid(key, boxes, visited):
-                # explore using the new key only
-                # if the key hasn't already been used
-                dfs(key)
-    dfs(0)  # unlock the first box
-    return len(visited) == len(boxes)
+                visited.append(key)
+                queue.enqueue(key)
+        return len(visited) == len(boxes)
+
+
+class Node:
+    """A class representing a Node."""
+    def __init__(self, value, node=None):
+        self.value = value
+        self.next_node = node
+
+
+class Queue:
+    """A class representing a Queue data structure."""
+    def __init__(self):
+        self.head = None
+        self.__count = 0
+
+    def enqueue(self, value):
+        node = Node(value)
+        if self.head is None:
+            node.next_node = None
+            self.head = node
+        else:
+            tmp = self.head
+            while tmp.next_node:
+                tmp = tmp.next_node
+            tmp.next_node = node
+            node.next_node = None
+        self.__count += 1
+
+    def dequeue(self, index=0):
+        node = self.head
+        self.head = node.next_node if node else None
+        self.__count -= 1
+        return node.value if node else None
+
+    @property
+    def length(self):
+        return self.__count
