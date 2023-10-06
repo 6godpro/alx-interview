@@ -54,7 +54,7 @@ def canUnlockAll(boxes):
             if keyIsValid(key, boxes, visited):
                 visited.append(key)
                 queue.enqueue(key)
-        return len(visited) == len(boxes)
+    return len(visited) == len(boxes)
 
 
 class Node:
