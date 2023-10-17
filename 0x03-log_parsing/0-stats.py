@@ -17,7 +17,7 @@ def display_stats():
 
 
 def handler(signum, frame):
-    """Handles an signal gracefully."""
+    """Handles a signal gracefully."""
     display_stats()
     exit(1)
 
@@ -30,8 +30,8 @@ def valid_log(line):
     """
     import re
 
-    log_regex = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[.*?\]'
-    log_regex += r' "GET /projects/260 HTTP/1\.1" (\d+) (\d+)'
+    log_regex = r'^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
+    log_regex += r' - \[.*?\] "GET /projects/260 HTTP/1\.1" (\d+) (\d+)'
     match = re.match(log_regex, line)
     if match:
         return (True, match)
@@ -45,8 +45,10 @@ count = 0
 
 for line in sys.stdin:
     if count == 10:
-        count = 0
+        count = 1
         display_stats()
+    else:
+        count += 1
 
     res = valid_log(line)
     if res[0]:
@@ -58,6 +60,5 @@ for line in sys.stdin:
                     result[status_code] = 1
                 else:
                     result[status_code] += 1
-                count += 1
             except Exception as e:
                 pass
