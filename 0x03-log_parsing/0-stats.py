@@ -56,4 +56,3 @@ try:
                     pass
 except KeyboardInterrupt:
     display_stats()
-    sys.exit()
