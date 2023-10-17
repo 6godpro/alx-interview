@@ -3,7 +3,7 @@
    This script reads from the stdin line by line and computes metrics.
 """
 import sys
-
+import signal
 
 result = {}
 total_size = 0
@@ -14,6 +14,12 @@ def display_stats():
     print("File size: {}".format(total_size))
     for key in sorted(result):
         print(f"{key}: {result[key]}")
+
+
+def handler(signum, frame):
+    """Handles an signal gracefully."""
+    display_stats()
+    exit(1)
 
 
 def valid_log(line):
@@ -32,27 +38,26 @@ def valid_log(line):
     return (False, None)
 
 
+signal.signal(signal.SIGINT, handler)
 valid_status_codes = ['200', '301', '400', '401', '403', '404', '405', '500']
 count = 0
 
-try:
-    for line in sys.stdin:
-        if count == 10:
-            count = 0
-            display_stats()
 
-        res = valid_log(line)
-        if res[0]:
-            status_code, file_size = res[1].groups()
-            if status_code in valid_status_codes:
-                try:
-                    total_size += int(file_size)
-                    if status_code not in result:
-                        result[status_code] = 1
-                    else:
-                        result[status_code] += 1
-                    count += 1
-                except Exception as e:
-                    pass
-except KeyboardInterrupt:
-    display_stats()
+for line in sys.stdin:
+    if count == 10:
+        count = 0
+        display_stats()
+
+    res = valid_log(line)
+    if res[0]:
+        status_code, file_size = res[1].groups()
+        if status_code in valid_status_codes:
+            try:
+                total_size += int(file_size)
+                if status_code not in result:
+                    result[status_code] = 1
+                else:
+                    result[status_code] += 1
+                count += 1
+            except Exception as e:
+                pass
