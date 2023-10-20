@@ -49,10 +49,10 @@ for line in sys.stdin:
     else:
         count += 1
 
-    result = valid_log(line)
-    if not result[0]:
+    res = valid_log(line)
+    if not res[0]:
         continue
-    status_code, file_size = result[1]
+    status_code, file_size = res[1]
 
     if status_code in valid_status_codes:
         total_size += int(file_size)
