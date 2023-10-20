@@ -36,16 +36,12 @@ for line in sys.stdin:
 
     try:
         line = line.split()
-        status_code, file_size = line[-2], line[-1]
+        status_code, file_size = line[-2], int(line[-1])
 
         if status_code in valid_status_codes:
-            try:
-                total_size += int(file_size)
-            except Exception as e:
-                continue
-            if status_code not in result:
-                    result[status_code] = 1
-            else:
-                result[status_code] += 1
-    except IndexError:
+            total_size += file_size
+            result[status_code] = result.get(status_code, 0) + 1
+    except (IndexError, ValueError):
         continue
+
+display_stats()
