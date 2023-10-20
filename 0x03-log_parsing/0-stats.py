@@ -22,6 +22,21 @@ def handler(signum, frame):
     exit(1)
 
 
+def valid_log(line):
+    """Ensures that a line matches to a valid log line.
+       e.g A valid log line should look like this:
+       <IP> - [<date>] "GET /projects/260 HTTP/1.1" <status code> <file size>
+    """
+    import re
+
+    log_regex = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[.*?\]'
+    log_regex += r' "GET /projects/260 HTTP/1\.1" (\d+) (\d+)'
+    match = re.match(log_regex, line)
+    if match:
+        return (True, match.groups())
+    return (False, None)
+
+
 signal.signal(signal.SIGINT, handler)
 valid_status_codes = ['200', '301', '400', '401', '403', '404', '405', '500']
 count = 0
@@ -34,14 +49,14 @@ for line in sys.stdin:
     else:
         count += 1
 
-    try:
-        line = line.split()
-        status_code, file_size = line[-2], int(line[-1])
-
-        if status_code in valid_status_codes:
-            total_size += file_size
-            result[status_code] = result.get(status_code, 0) + 1
-    except (IndexError, ValueError):
+    result = valid_log(line)
+    if not result[0]:
         continue
+    status_code, file_size = result[1]
+
+    if status_code in valid_status_codes:
+        total_size += int(file_size)
+        result[status_code] = result.get(status_code, 0) + 1
+
 
 display_stats()
