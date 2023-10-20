@@ -29,8 +29,7 @@ def valid_log(line):
     """
     import re
 
-    log_regex = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[.*?\]'
-    log_regex += r' "GET /projects/260 HTTP/1\.1" (\d+) (\d+)'
+    log_regex = r'^.*-.*\[.*?\] "GET /projects/260 HTTP/1\.1" (.*) (\d+)'
     match = re.match(log_regex, line)
     if match:
         return (True, match.groups())
@@ -40,7 +39,6 @@ def valid_log(line):
 signal.signal(signal.SIGINT, handler)
 valid_status_codes = ['200', '301', '400', '401', '403', '404', '405', '500']
 count = 0
-
 
 for line in sys.stdin:
     if count == 10:
@@ -54,9 +52,8 @@ for line in sys.stdin:
         continue
     status_code, file_size = res[1]
 
+    total_size += int(file_size)
     if status_code in valid_status_codes:
-        total_size += int(file_size)
         result[status_code] = result.get(status_code, 0) + 1
-
 
 display_stats()
