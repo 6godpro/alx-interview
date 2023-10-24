@@ -21,7 +21,7 @@ def validUTF8(data):
                 return False
         else:
             if byte & 0b11000000 == 0b10000000:
-                byte -= 1
+                continuation_byte -= 1
             else:
                 return False
     return continuation_byte == 0
